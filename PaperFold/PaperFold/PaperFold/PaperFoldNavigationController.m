@@ -54,34 +54,18 @@
 {
     if (paperFoldState==PaperFoldStateDefault)
     {
-        [self.rootViewController viewWillAppear:YES];
-        [self.rootViewController viewDidAppear:YES];
-        
-        if (self.rightViewController) {
-            [self.rightViewController viewWillDisappear:YES];
-            [self.rightViewController viewDidDisappear:YES];
-        }
-        
-        if (self.leftViewController) {
-            [self.leftViewController viewWillDisappear:YES];
-            [self.leftViewController viewDidDisappear:YES];
-        }
+        [self.leftViewController viewWillAppear:YES];
+        [self.leftViewController viewDidAppear:YES];
     }
     else if (paperFoldState==PaperFoldStateLeftUnfolded)
     {
-        [self.leftViewController viewWillAppear:YES];
-        [self.leftViewController viewDidAppear:YES];
-        
-        [self.rootViewController viewWillDisappear:YES];
-        [self.rootViewController viewDidDisappear:YES];
+        [self.rootViewController viewWillAppear:YES];
+        [self.rootViewController viewDidAppear:YES];
     }
     else if (paperFoldState==PaperFoldStateRightUnfolded)
     {
         [self.rightViewController viewWillAppear:YES];
         [self.rightViewController viewDidAppear:YES];
-        
-        [self.rootViewController viewWillDisappear:YES];
-        [self.rootViewController viewDidDisappear:YES];
     }
 }
 

@@ -83,37 +83,42 @@ CGFloat const kRightViewUnfoldThreshold = 0.3;
 
 - (void)setLeftFoldContentView:(UIView*)view
 {
-    if (self.leftFoldView) [self.leftFoldView removeFromSuperview];
-
-    self.leftFoldView = [[FoldView alloc] initWithFrame:CGRectMake(0,0,view.frame.size.width,self.frame.size.height)];
-    [self.leftFoldView setAutoresizingMask:UIViewAutoresizingFlexibleHeight];
-    [self insertSubview:self.leftFoldView belowSubview:self.contentView];
-    [self.leftFoldView setContent:view];
-    [view setAutoresizingMask:UIViewAutoresizingFlexibleHeight];
-    [self setPaperFoldState:PaperFoldStateDefault];
-    
-    UIView *line = [[UIView alloc] initWithFrame:CGRectMake(-1,0,1,self.frame.size.height)];
-    [line setAutoresizingMask:UIViewAutoresizingFlexibleHeight];
-    [self.contentView addSubview:line];
-    [line setBackgroundColor:[UIColor colorWithWhite:0.9 alpha:0.5]];
+	[self setLeftFoldContentView:view leftViewFoldCount:1 leftViewPullFactor:0.9];
 }
 
+- (void)setLeftFoldContentView:(UIView*)view leftViewFoldCount:(int)leftViewFoldCount leftViewPullFactor:(float)leftViewPullFactor
+{
+	if (self.leftFoldView) [self.leftFoldView removeFromSuperview];
+	
+	self.leftFoldView = [[MultiFoldView alloc] initWithFrame:CGRectMake(0,0,view.frame.size.width,self.frame.size.height) folds:leftViewFoldCount pullFactor:leftViewPullFactor forLeftview:YES];
+	[self.leftFoldView setAutoresizingMask:UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleHeight];
+	[self insertSubview:self.leftFoldView belowSubview:self.contentView];
+	[self.leftFoldView setContent:view];
+	[view setAutoresizingMask:UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth];
+	[self setPaperFoldState:PaperFoldStateDefault];
+	
+	/*UIView *line = [[UIView alloc] initWithFrame:CGRectMake(-1,0,1,self.frame.size.height)];
+	[line setAutoresizingMask:UIViewAutoresizingFlexibleHeight];
+	[self.contentView addSubview:line];
+	[line setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleHeight];
+	[line setBackgroundColor:[UIColor colorWithWhite:0.9 alpha:0.5]];*/
+}
 - (void)setRightFoldContentView:(UIView*)view rightViewFoldCount:(int)rightViewFoldCount rightViewPullFactor:(float)rightViewPullFactor
 {
-    if(self.rightFoldView) [self.rightFoldView removeFromSuperview];
-
-    self.rightFoldView = [[MultiFoldView alloc] initWithFrame:CGRectMake(self.frame.size.width,0,view.frame.size.width,self.frame.size.height) folds:rightViewFoldCount pullFactor:rightViewPullFactor];
+    if (self.rightFoldView) [self.rightFoldView removeFromSuperview];
+    
+    self.rightFoldView = [[MultiFoldView alloc] initWithFrame:CGRectMake(self.frame.size.width,0,view.frame.size.width,self.frame.size.height) folds:rightViewFoldCount pullFactor:rightViewPullFactor forLeftview:NO];
     [self.rightFoldView setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleHeight];
-    [self.contentView insertSubview:self.rightFoldView atIndex:0];
+    [self.contentView addSubview:self.rightFoldView];
     [self.rightFoldView setContent:view];
     [view setAutoresizingMask:UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth];
     [self setPaperFoldState:PaperFoldStateDefault];
     
-    UIView *line = [[UIView alloc] initWithFrame:CGRectMake(self.contentView.frame.size.width,0,1,self.frame.size.height)];
+    /*UIView *line = [[UIView alloc] initWithFrame:CGRectMake(self.contentView.frame.size.width,0,1,self.frame.size.height)];
     [line setAutoresizingMask:UIViewAutoresizingFlexibleHeight];
     [self.contentView addSubview:line];
     [line setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleHeight];
-    [line setBackgroundColor:[UIColor colorWithWhite:0.9 alpha:0.5]];
+    [line setBackgroundColor:[UIColor colorWithWhite:0.9 alpha:0.5]];*/
 }
 
 - (void)onContentViewPanned:(UIPanGestureRecognizer*)gesture
@@ -359,18 +364,17 @@ CGFloat const kRightViewUnfoldThreshold = 0.3;
     
     if(self.leftFoldView)
     {
-        [self.leftFoldView setFrame:CGRectMake(0,
-                                               0,
-                                               self.leftFoldView.contentView.frame.size.width,
-                                               self.frame.size.height)];
+        [self setLeftFoldContentView:self.leftFoldView.contentView
+                   leftViewFoldCount:self.leftFoldView.numberOfFolds
+                  leftViewPullFactor:self.leftFoldView.pullFactor];
+
     }
     
     if(self.rightFoldView)
     {
-        [self.rightFoldView setFrame:CGRectMake(self.frame.size.width,
-                                                0,
-                                                self.rightFoldView.contentView.frame.size.width,
-                                                self.frame.size.height)];
+        [self setRightFoldContentView:self.rightFoldView.contentView
+                   rightViewFoldCount:self.rightFoldView.numberOfFolds
+                  rightViewPullFactor:self.rightFoldView.pullFactor];
         
     }
 }
